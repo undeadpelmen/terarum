@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:16
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: server
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d server"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - postgres_data:/var/lib/ter/data
+
+  server:
+    image: undeadjava/server
+    restart: always
+    ports:
+      - 60606:60606
+    environment:
+      SERVER_PORT: 60606
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/server
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f localhost:60606"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 5s
+  
+  rabbit:
+    image: rabbitmq:4.0-management
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8008:10000
+    environment:
+      FRONT_HOST:
+      BACK_HOST: server:60606
+
+volumes:
+  postgres_data:
