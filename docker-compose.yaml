@@ -15,7 +15,7 @@ services:
       start_period: 5s
     volumes:
       - postgres_data:/var/lib/ter/data
-
+  
   server:
     image: undeadjava/server
     restart: always
@@ -45,17 +45,6 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    restart: always
-    ports:
-      - 8008:10000
-    environment:
-      FRONT_HOST:
-      BACK_HOST: server:60606
 
 volumes:
   postgres_data:
