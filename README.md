@@ -8,6 +8,12 @@ git clone https://github.com/undeadpelmen/terarium-compose.git
 cd terarium-compose
 ```
 
+## Start
+
+```sh
+docker compose up -d
+```
+
 ## Usage
 
 1. Front: [http://localhost/](http://localhost/)
@@ -17,4 +23,4 @@ cd terarium-compose
 
 ### Frontend
 
-[Front end repo](hhttps://github.com/StruyaBobraa/terrarium-frontend-mpa)
+[Front-end repo](hhttps://github.com/StruyaBobraa/terrarium-frontend-mpa)
